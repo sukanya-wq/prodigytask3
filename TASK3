@@ -1,0 +1,24 @@
+TASK3:
+
+import random
+
+text = "AI is the future AI is powerful AI changes the world"
+words = text.split()
+
+markov = {}
+
+for i in range(len(words)-1):
+    key = words[i]
+    next_word = words[i+1]
+    if key not in markov:
+        markov[key] = []
+    markov[key].append(next_word)
+
+word = random.choice(words)
+result = word
+
+for _ in range(20):
+    word = random.choice(markov.get(word, words))
+    result += " " + word
+
+print(result)

@@ -22,3 +22,7 @@ for _ in range(20):
     result += " " + word
 
 print(result)
+
+
+it will print the result
+import jwt from 'jsonwebtoken'; import fs from 'fs'; const appId=3938560; const key=fs.readFileSync('./src/keys/code-review-copilot-sukanya.2026-06-02.private-key (2).pem','utf8'); const token=jwt.sign({iat:Math.floor(Date.now()/1000),exp:Math.floor(Date.now()/1000)+600,iss:appId},key,{algorithm:'RS256'}); console.log(jwt.decode(token));"

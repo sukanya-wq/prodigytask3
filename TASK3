@@ -21,4 +21,115 @@ for _ in range(20):
     word = random.choice(markov.get(word, words))
     result += " " + word
 
-print(result)
+print(result
+import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
+import crypto from "crypto";
+import { reviewPullRequest } from "./reviewer.js";
+import { getInstallationToken, getPRDiff, postReviewComment } from "./github.js";
+
+const app = express();
+
+/* ✅ MUST be FIRST: raw body needed for signature verification */
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
+
+/* 🔐 Verify GitHub webhook signature */
+function verifyWebhook(req) {
+  const sig = req.headers["x-hub-signature-256"];
+  if (!sig) return false;
+
+  const hmac = crypto.createHmac("sha256", process.env.WEBHOOK_SECRET);
+  hmac.update(req.rawBody);
+
+  const digest = "sha256=" + hmac.digest("hex");
+
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(sig),
+      Buffer.from(digest)
+    );
+  } catch {
+    return false;
+  }
+}
+
+/* 🚀 WEBHOOK ROUTE */
+app.post("/webhook", async (req, res) => {
+  if (!verifyWebhook(req)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const event = req.headers["x-github-event"];
+  const payload = req.body;
+
+  // Respond immediately to avoid GitHub timeout
+  res.status(200).send("Processing");
+
+  // Only handle PR events
+  if (event !== "pull_request") return;
+  if (!["opened", "synchronize"].includes(payload.action)) return;
+
+  // Background processing (prevents 502 errors)
+  setImmediate(async () => {
+    try {
+      const { installation, pull_request, repository } = payload;
+
+      console.log(`🔍 Processing PR #${pull_request.number}`);
+
+      // Step 1: Get installation token
+      const token = await getInstallationToken(installation.id);
+
+      // Step 2: Get PR diff
+      const diff = await getPRDiff(
+        token,
+        repository.full_name,
+        pull_request.number
+      );
+
+      if (!diff) {
+        console.log("⚠️ Empty diff received, skipping review");
+        return;
+      }
+
+      // Step 3: Run AI review
+      const review = await reviewPullRequest({
+        repoName: repository.full_name,
+        prTitle: pull_request.title,
+        prDescription: pull_request.body || "",
+        prAuthor: pull_request.user.login,
+        diff,
+      });
+
+      // Step 4: Post review to GitHub
+      await postReviewComment(
+        token,
+        repository.full_name,
+        pull_request.number,
+        review
+      );
+
+      console.log(`✅ Reviewed PR #${pull_request.number}`);
+    } catch (err) {
+      console.error("❌ Review failed FULL ERROR:", err);
+    }
+  });
+});
+
+/* Health check */
+app.get("/health", (_, res) => {
+  res.json({ status: "ok" });
+});
+
+/* Start server */
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 CodeReview Copilot running on port ${PORT}`);
+});

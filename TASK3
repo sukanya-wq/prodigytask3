@@ -1,6 +1,10 @@
 TASK3:
 
-import random
+import 
+// 👇 ADD THESE DEBUG LOGS HERE
+  console.log("📩 EVENT:", event);
+  console.log("📦 INSTALLATION ID:", payload.installation?.id);
+  console.log("📁 REPO:", payload.repository?.full_name);
 
 text = "AI is the future AI is powerful AI changes the world"
 words = text.split()

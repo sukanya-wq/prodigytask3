@@ -22,3 +22,215 @@ for _ in range(20):
     result += " " + word
 
 print(result)
+You are a senior full-stack engineer and system architect.
+
+I want to build a fully working MVP SaaS project called:
+
+🧠 CodeFlow Vision — Code Execution Replay & Blueprint Visualizer
+
+---
+
+# 🎯 CORE IDEA
+
+Build a web application that:
+
+1. Takes a GitHub repository URL OR ZIP upload
+2. Converts it into a structured codebase model
+3. Generates:
+   - 🧭 Architecture blueprint (modules + relationships)
+   - 🔗 Dependency graph (who imports/calls who)
+   - 🎬 Execution replay simulation (step-by-step flow)
+4. Provides a PLAY button to animate execution like a movie
+
+Think:
+👉 “Google Maps + Netflix for code execution”
+
+---
+
+# 🚫 CRITICAL CONSTRAINTS
+
+- NO AI / LLM / external APIs required for core functionality
+- Must run fully locally
+- Keep it MVP-focused (avoid overengineering)
+- No microservices, no auth, no database required
+- Prioritize working end-to-end system over perfection
+
+---
+
+# 🧱 STEP 1 — SYSTEM ARCHITECTURE
+
+First, provide:
+
+- High-level architecture diagram (text-based)
+- Data flow from input → output
+- Frontend / backend separation
+- Tech stack (simple and practical)
+- Why each component is used
+
+---
+
+# ⚙️ STEP 2 — BACKEND (FastAPI)
+
+Build a working backend with:
+
+### Features:
+- GitHub repo cloning support
+- ZIP file upload support
+- Local folder normalization (everything becomes a folder)
+- Python AST-based code parsing
+- Function + call extraction
+- Dependency graph builder
+- Execution flow simulator (IMPORTANT)
+
+### APIs:
+- POST /ingest → accepts GitHub URL or ZIP
+- GET /analyze → returns structure + graph
+- GET /execution-flow → returns step-by-step execution list
+
+### Output:
+- Complete FastAPI code
+- Folder structure
+- requirements.txt
+
+---
+
+# 🧠 STEP 3 — CORE ENGINE (MOST IMPORTANT)
+
+Implement:
+
+### 1. AST Parser
+- Extract functions
+- Extract function calls
+- Identify relationships between modules
+
+### 2. Graph Builder
+- Create directed graph:
+  - nodes = files/functions
+  - edges = calls/imports
+
+### 3. Execution Flow Simulator (KEY FEATURE)
+Simulate execution as a sequence:
+
+Example output:
+[
+  "Start main()",
+  "Call login()",
+  "Call validate_user()",
+  "Call db.query()",
+  "Return from db.query()",
+  "Return from login()",
+  "End main()"
+]
+
+Explain clearly how this simulation is derived from static analysis.
+
+---
+
+# 🎨 STEP 4 — FRONTEND (VERY IMPORTANT)
+
+Build a clean SaaS-style React UI.
+
+### Design style:
+- Dark mode default
+- Minimal, modern, developer-focused
+- Inspired by GitHub, Vercel, Notion, VS Code
+
+---
+
+# 🧱 UI LAYOUT
+
+### 3-panel layout:
+
+------------------------------------------------------
+| Sidebar |        Main Canvas        | Right Panel |
+------------------------------------------------------
+
+---
+
+## Sidebar:
+- Dashboard
+- Upload Repo
+- Projects
+- History
+- Settings
+
+---
+
+## Main Canvas:
+Must support 3 modes:
+
+### 1. Blueprint View
+- architecture blocks
+- module relationships
+
+### 2. Graph View
+- interactive node graph
+- zoom + drag
+
+### 3. Execution Replay View
+- step-by-step animation
+- timeline based execution
+
+---
+
+## Right Panel:
+On clicking node show:
+- file name
+- purpose (rule-based summary)
+- functions inside
+- connected files
+- complexity estimate
+
+---
+
+# 🎬 STEP 5 — EXECUTION REPLAY (WOW FEATURE)
+
+Implement PLAY system:
+
+- Play / Pause / Next / Previous controls
+- Step-by-step highlighting of execution flow
+- Sync graph highlighting with current step
+- Smooth transitions between steps
+
+This is the key differentiator.
+
+---
+
+# ✨ STEP 6 — UI QUALITY REQUIREMENTS
+
+Make it feel like a real SaaS product:
+
+- clean spacing (no clutter)
+- smooth animations
+- hover effects on nodes
+- loading state: “Analyzing codebase…”
+- skeleton loaders
+- professional layout (NOT student UI)
+
+---
+
+# 🏁 FINAL OUTPUT REQUIRED
+
+Provide:
+
+1. Full system architecture
+2. Backend FastAPI code
+3. AST + graph + execution engine code
+4. Frontend React code
+5. Folder structure (frontend + backend)
+6. Setup instructions to run locally
+7. Example demo flow
+
+---
+
+# 💭 FINAL THINKING RULE
+
+This is not just a tool.
+
+It is a:
+👉 Visual storytelling system for how code executes and connects
+
+Focus on:
+- simplicity
+- working MVP
+- clean modular design
